@@ -7,28 +7,30 @@ export class Database {
     public static db: Db;
     public static client: MongoClient;
 
-    public static connect = (callback: () => void) => {
-        if(process.env.MONGO_URI && process.env.DATABASE) {
-            MongoClient.connect(process.env.MONGO_URI, {useUnifiedTopology: true}, (err, client) => {
-                if(err) throw new MongoError(err.message);
+    public static connect = async () => {
+        if (process.env.MONGO_URI && process.env.DATABASE) {
+            try {
+                const client = await MongoClient.connect(process.env.MONGO_URI, {useUnifiedTopology: true});
                 Database.client = client;
                 Database.db = client.db(process.env.DATABASE);
-                callback();
-            });
-        }else{
+            }catch (e) {
+                throw new MongoError(e.message);
+            }
+        } else {
             throw new MongoError("Mongo URI not found, please add to the environment variables");
         }
     };
 
-    public static save = (collection: string, toSaveObject: any, callback?: () => void) => {
-        if(!Database.client.isConnected()) throw new MongoError("Mongo is disconnected");
-        Database.db.collection(collection).insertOne(toSaveObject, (error) => {
-            if(error) throw new MongoError("Error saving object");
-            callback && callback();
-        });
+    public static save = async (collection: string, toSaveObject: any) => {
+        if (!Database.client.isConnected()) throw new MongoError("Mongo is disconnected");
+        try {
+            return await Database.db.collection(collection).insertOne(toSaveObject);
+        } catch (e) {
+            throw new MongoError("Error saving object. Technical error: " + e.message);
+        }
     };
 
-    public static disconnect = (callback: () => void) => {
-        Database.client.close(callback);
+    public static disconnect = async () => {
+        return await Database.client.close();
     }
 }

@@ -8,3 +8,10 @@ export interface LoginResponse{
     hash: string;
     loggedAt: Date;
 }
+
+export interface Session {
+    id: string;
+    hash: string;
+    profile: string;
+    lastLogin: Date;
+}

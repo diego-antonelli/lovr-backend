@@ -21,7 +21,6 @@ export interface Profile {
     createdAt?: Date;
     updatedAt?: Date;
     devices: Device[];
-    session?: Session;
 }
 
 export interface SocialNetwork{
@@ -60,10 +59,4 @@ export interface Device{
     os: string;
     version: string;
     deviceType: string;
-}
-
-export interface Session {
-    id: string;
-    hash: string;
-    lastLogin: Date;
 }
