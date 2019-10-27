@@ -7,6 +7,10 @@ DATABASE=database
 NODE_ENV=development
 ```
 
+## Database
+- You need to create the initial collections at your MongoDB database:
+`profiles`, `sessions`
+
 ## API Documentation
 - API documentation is built using Swagger UI, to check the available API docs, access
 `http://localhost:3000/api-docs`
