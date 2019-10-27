@@ -51,6 +51,34 @@
           }
         ]
       }
+    },
+    "/profile/all": {
+      "get": {
+        "tags": ["Login"],
+        "summary": "Obtain all the profiles around according to a specific profile and preferences",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "lovr-api-key",
+            "in": "header",
+            "description": "Lovr API Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
     }
   }
 }

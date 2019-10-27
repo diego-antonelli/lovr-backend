@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {getPlacesByName} from "../search/SearchController";
 import {checkHeader} from "../../middleware/checks";
+import {findProfiles} from "./ProfileController";
 
 export default [
     {
@@ -8,8 +8,8 @@ export default [
         method: "get",
         handler: [
             checkHeader,
-            async ({query}: Request, res: Response) => {
-                const result = await getPlacesByName(query.q);
+            async (req: Request, res: Response) => {
+                const result = await findProfiles(req);
                 res.status(200).send(result);
             }
         ]

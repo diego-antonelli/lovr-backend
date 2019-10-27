@@ -1,7 +1,14 @@
 import {Db, MongoClient, MongoError} from "mongodb";
 import dotenv from "dotenv";
+import * as config from "../config/database.json";
 
 dotenv.config();
+
+const createSpatialDataForProfiles = async (): Promise<string> => {
+    const collection = Database.db.collection(config.collections.profiles);
+    return await collection.createIndex(
+        {'location': "2dsphere"});
+};
 
 export class Database {
     public static db: Db;
@@ -13,6 +20,7 @@ export class Database {
                 const client = await MongoClient.connect(process.env.MONGO_URI, {useUnifiedTopology: true});
                 Database.client = client;
                 Database.db = client.db(process.env.DATABASE);
+                await createSpatialDataForProfiles();
             }catch (e) {
                 throw new MongoError(e.message);
             }

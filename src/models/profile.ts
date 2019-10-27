@@ -1,10 +1,10 @@
 export const enum Genre {
-    MALE,
-    FEMALE,
-    BOTH
+    MALE="M",
+    FEMALE="F",
+    BOTH="B"
 }
 export interface Profile {
-    id: string;
+    _id: string;
     name: string;
     email: string;
     avatar?: string;
@@ -12,15 +12,22 @@ export interface Profile {
     age: number;
     socialNetworks: SocialNetwork[];
     premium: boolean;
-    distance: number;
-    latitude: number; //Real or fake based on the preferences
-    longitude: number; //Real or fake based on the preferences
+    distance?: number;
+    latitude?: number; //Real or fake based on the preferences
+    longitude?: number; //Real or fake based on the preferences
+    location: Location;
     genre: Genre;
-    preferences: Preferences;
+    preferences?: Preferences;
     deleted?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
     devices: Device[];
+}
+
+export interface Location {
+    type: string,
+    coordinates: number[];
+    lastUpdate: Date
 }
 
 export interface SocialNetwork{
@@ -44,7 +51,6 @@ export const enum SocialNetworkType {
 }
 
 export interface Preferences{
-    id: string;
     genre: Genre;
     minimumAge: number;
     maximumAge: number;
