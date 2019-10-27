@@ -10,7 +10,7 @@ export interface LoginResponse{
 }
 
 export interface Session {
-    id: string;
+    _id?: string;
     hash: string;
     profile: string;
     lastLogin: Date;

@@ -30,6 +30,25 @@ export class Database {
         }
     };
 
+    public static update = async (collection: string, filter:any, toUpdateObject: any) => {
+        if (!Database.client.isConnected()) throw new MongoError("Mongo is disconnected");
+        try {
+            return await Database.db.collection(collection).updateOne(filter, {$set: toUpdateObject});
+        } catch (e) {
+            throw new MongoError("Error saving object. Technical error: " + e.message);
+        }
+    };
+
+    public static findOne = async (collection: string, filter: any) => {
+        if (!Database.client.isConnected()) throw new MongoError("Mongo is disconnected");
+        return await Database.db.collection(collection).findOne(filter);
+    };
+
+    public static findMany = async (collection: string, filter: any) => {
+        if (!Database.client.isConnected()) throw new MongoError("Mongo is disconnected");
+        return await Database.db.collection(collection).find(filter).toArray();
+    };
+
     public static disconnect = async () => {
         return await Database.client.close();
     }
