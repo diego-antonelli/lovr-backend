@@ -51,6 +51,7 @@ export const updateLocation = async (req: Request) => {
             }
         }
     },{arrayFilters:[{"filter.uuid": body.uuid}]});
+    // Add the new array if it doesn't exists
     await Database.updateCustom(config.collections.profiles, {
         "_id": currentProfile._id
     }, {
