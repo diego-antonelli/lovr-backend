@@ -2,7 +2,7 @@ import { Request } from "express";
 import * as config from "../../config/database.json";
 import {Database} from "../../database";
 import {HTTP400Error, HTTP401Error, HTTP404Error} from "../../utils/httpErrors";
-import {UpdateLocationRequest, Genre, Profile} from "../../models";
+import {UpdateLocationRequest, Genre, Profile, Preferences} from "../../models";
 
 const METERS_PER_KM = 1000;
 // const METERS_PER_MILE = 1609.34;
@@ -34,7 +34,7 @@ export const findProfiles = async (req: Request) => {
     });
 };
 
-export const updateLocation = async (req: Request) => {
+export const updateLocation = async (req: Request): Promise<Profile> => {
     const currentProfile = await extractProfile(req);
     const body = req.body as UpdateLocationRequest;
     const updatedProfile = await Database.updateCustom(config.collections.profiles, {
@@ -68,6 +68,22 @@ export const updateLocation = async (req: Request) => {
     if(!updatedProfile || updatedProfile.matchedCount === 0){
         throw new HTTP400Error();
     }
+    return await Database.findOne(config.collections.profiles, {"_id": currentProfile._id});
+};
+
+export const updatePreferences = async (req: Request): Promise<Profile> => {
+    const currentProfile = await extractProfile(req);
+    const body = req.body as Preferences;
+    const updatedProfile = await Database.update(config.collections.profiles, {
+        "_id": currentProfile._id
+    }, {"preferences": body});
+    if(!updatedProfile || updatedProfile.matchedCount === 0){
+        throw new HTTP400Error();
+    }
+    return {
+        ...currentProfile,
+        preferences: body
+    } as Profile;
 };
 
 const extractProfile = async (req: Request): Promise<Profile> => {

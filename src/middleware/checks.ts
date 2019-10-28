@@ -48,3 +48,15 @@ export const checkLocationRequest = (
         next();
     }
 };
+
+export const checkPreferencesRequest = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    if (!req.body.genre || !req.body.minimumAge || !req.body.maximumAge || !req.body.distance || req.body.showRealLocation === undefined ) {
+        throw new HTTP400Error("Missing parameters");
+    } else {
+        next();
+    }
+};

@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {checkHeader, checkLocationRequest} from "../../middleware/checks";
-import {findProfiles, updateLocation} from "./ProfileController";
+import {checkHeader, checkLocationRequest, checkPreferencesRequest} from "../../middleware/checks";
+import {findProfiles, updateLocation, updatePreferences} from "./ProfileController";
 
 export default [
     {
@@ -21,8 +21,8 @@ export default [
             checkHeader,
             checkLocationRequest,
             async (req: Request, res: Response) => {
-                await updateLocation(req);
-                res.status(200).send({});
+                const result = await updateLocation(req);
+                res.status(200).send(result);
             }
         ]
     },
@@ -31,8 +31,10 @@ export default [
         method: "post",
         handler: [
             checkHeader,
+            checkPreferencesRequest,
             async (req: Request, res: Response) => {
-                res.status(200).send({});
+                const result = await updatePreferences(req);
+                res.status(200).send(result);
             }
         ]
     }
