@@ -22,7 +22,7 @@ export const findProfiles = async (req: Request) => {
     if(!currentProfile || !currentProfile._id){
         throw new HTTP401Error("Authorization required");
     }
-    if(!currentProfile.preferences || !currentProfile.preferences.genre || !currentProfile.preferences.distance){
+    if(!currentProfile.preferences || !currentProfile.preferences.genre || !currentProfile.preferences.distance || !currentProfile.location){
         return [];
     }
 
@@ -45,13 +45,26 @@ export const findProfiles = async (req: Request) => {
     }
 
     const results = await Database.findMany(config.collections.profiles, {
+        "_id": {
+            $ne: currentProfile._id
+        },
         ...filterGenre,
-        age: {
+        "age": {
             $gte: currentProfile.preferences.minimumAge,
             $lte: currentProfile.preferences.maximumAge
         },
-        location: {
-            $nearSphere: {
+        "preferences.minimumAge": {
+            $lte: currentProfile.age
+        },
+        "preferences.maximumAge": {
+            $gte: currentProfile.age
+        },
+        $or: [
+            {"preferences.genre": Genre.BOTH},
+            {"preferences.genre": currentProfile.genre}
+        ],
+        "location": {
+            $near: {
                 $geometry: {
                     type: "Point",
                     coordinates: currentProfile.location.coordinates
@@ -65,8 +78,8 @@ export const findProfiles = async (req: Request) => {
 
     return results.map((profile: Profile) => {
         if(profile.preferences && !profile.preferences.showRealLocation){
-            profile.latitude = profile.location.coordinates[0]+getError();
-            profile.longitude = profile.location.coordinates[1] + getError();
+            profile.latitude = profile.location!.coordinates[0]+getError();
+            profile.longitude = profile.location!.coordinates[1] + getError();
         }
         const {_id, location, preferences, ...otherProps} = profile;
         return otherProps;

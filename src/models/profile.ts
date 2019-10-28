@@ -15,9 +15,9 @@ export interface Profile {
     distance?: number;
     latitude?: number; //Real or fake based on the preferences
     longitude?: number; //Real or fake based on the preferences
-    location: Location;
+    location?: Location;
     genre: Genre;
-    preferences?: Preferences;
+    preferences: Preferences;
     deleted?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
