@@ -54,7 +54,7 @@
     },
     "/profile/all": {
       "get": {
-        "tags": ["Login"],
+        "tags": ["Profile"],
         "summary": "Obtain all the profiles around according to a specific profile and preferences",
         "responses": {
           "200": {
@@ -75,6 +75,65 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/profile/update-location": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Update the location of the current user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "lovr-api-key",
+            "in": "header",
+            "description": "Lovr API Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Specifies the update location body",
+            "required": true,
+            "schema": {
+              "description": "Update Location Request",
+              "example": {
+                "latitude": "1.2345",
+                "longitude": "1.2345",
+                "uuid": "123456789",
+                "locale": "en_US",
+                "os": "iOS",
+                "version": "13.0",
+                "deviceType": "iPhone"
+              },
+              "items": {
+                "latitude": "number",
+                "longitude": "number",
+                "uuid": "string",
+                "locale": "string",
+                "os": "string",
+                "version": "string",
+                "deviceType": "string",
+                "altitude": "number",
+                "accuracy": "number"
+              },
+              "maxItems": 1,
+              "minItems": 1
             }
           }
         ]

@@ -36,3 +36,15 @@ export const checkHeader = (
         next();
     }
 };
+
+export const checkLocationRequest = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    if (!req.body.latitude || !req.body.longitude || !req.body.uuid) {
+        throw new HTTP400Error("Missing latitude, longitude or uuid parameter");
+    } else {
+        next();
+    }
+};

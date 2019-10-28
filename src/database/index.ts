@@ -1,4 +1,4 @@
-import {Db, MongoClient, MongoError} from "mongodb";
+import {Db, MongoClient, MongoError, UpdateOneOptions} from "mongodb";
 import dotenv from "dotenv";
 import * as config from "../config/database.json";
 
@@ -42,6 +42,15 @@ export class Database {
         if (!Database.client.isConnected()) throw new MongoError("Mongo is disconnected");
         try {
             return await Database.db.collection(collection).updateOne(filter, {$set: toUpdateObject});
+        } catch (e) {
+            throw new MongoError("Error saving object. Technical error: " + e.message);
+        }
+    };
+
+    public static updateCustom = async (collection: string, filter:any, toUpdate: any, options?: UpdateOneOptions) => {
+        if (!Database.client.isConnected()) throw new MongoError("Mongo is disconnected");
+        try {
+            return await Database.db.collection(collection).updateOne(filter, toUpdate, options);
         } catch (e) {
             throw new MongoError("Error saving object. Technical error: " + e.message);
         }

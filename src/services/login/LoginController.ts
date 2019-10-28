@@ -8,7 +8,7 @@ import {HTTP401Error, HTTP403Error, HTTP404Error} from "../../utils/httpErrors";
 
 export const login = async (loginRequest: LoginRequest, res: Response) => {
     const profile = await Database.findOne(config.collections.profiles, {
-        email: loginRequest.email,
+        email: loginRequest.email.toLowerCase(),
         password: sha256(loginRequest.password)
     });
 

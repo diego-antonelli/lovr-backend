@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
-import {checkHeader} from "../../middleware/checks";
-import {findProfiles} from "./ProfileController";
+import {checkHeader, checkLocationRequest} from "../../middleware/checks";
+import {findProfiles, updateLocation} from "./ProfileController";
 
 export default [
     {
@@ -19,8 +19,9 @@ export default [
         method: "post",
         handler: [
             checkHeader,
-            async ({body}: Request, res: Response) => {
-                //const result = await getPlacesByName(query.q);
+            checkLocationRequest,
+            async (req: Request, res: Response) => {
+                await updateLocation(req);
                 res.status(200).send({});
             }
         ]
@@ -30,8 +31,7 @@ export default [
         method: "post",
         handler: [
             checkHeader,
-            async ({body}: Request, res: Response) => {
-                //const result = await getPlacesByName(query.q);
+            async (req: Request, res: Response) => {
                 res.status(200).send({});
             }
         ]

@@ -1,8 +1,8 @@
 import { Request } from "express";
 import * as config from "../../config/database.json";
 import {Database} from "../../database";
-import {HTTP401Error} from "../../utils/httpErrors";
-import {Genre, Profile} from "../../models";
+import {HTTP400Error, HTTP401Error, HTTP404Error} from "../../utils/httpErrors";
+import {UpdateLocationRequest, Genre, Profile} from "../../models";
 
 const METERS_PER_KM = 1000;
 // const METERS_PER_MILE = 1609.34;
@@ -14,14 +14,8 @@ const getError = () => {
 };
 
 export const findProfiles = async (req: Request) => {
-    const currentSession = await Database.findOne(config.collections.sessions, {hash: req.header("lovr-api-key")});
-    if(!currentSession || !currentSession._id){
-        throw new HTTP401Error("Authorization required");
-    }
-    const currentProfile: Profile = await Database.findOne(config.collections.profiles, {_id: currentSession.profile});
-    if(!currentProfile || !currentProfile._id){
-        throw new HTTP401Error("Authorization required");
-    }
+    const currentProfile = await extractProfile(req);
+
     if(!currentProfile.preferences || !currentProfile.preferences.genre || !currentProfile.preferences.distance || !currentProfile.location){
         return [];
     }
@@ -40,6 +34,53 @@ export const findProfiles = async (req: Request) => {
     });
 };
 
+export const updateLocation = async (req: Request) => {
+    const currentProfile = await extractProfile(req);
+    const body = req.body as UpdateLocationRequest;
+    const updatedProfile = await Database.updateCustom(config.collections.profiles, {
+        "_id": currentProfile._id
+    }, {
+        $set: {
+            "location.coordinates": [Number(body.latitude), Number(body.longitude)],
+            "devices.$[filter]": {
+                "uuid": body.uuid,
+                "deviceType": body.deviceType,
+                "locale": body.locale,
+                "os": body.os,
+                "version": body.version
+            }
+        }
+    },{arrayFilters:[{"filter.uuid": body.uuid}]});
+    await Database.updateCustom(config.collections.profiles, {
+        "_id": currentProfile._id
+    }, {
+        $addToSet: {
+            "devices": {
+                "uuid": body.uuid,
+                "deviceType": body.deviceType,
+                "locale": body.locale,
+                "os": body.os,
+                "version": body.version
+            }
+        }
+    });
+    if(!updatedProfile || updatedProfile.matchedCount === 0){
+        throw new HTTP400Error();
+    }
+};
+
+const extractProfile = async (req: Request): Promise<Profile> => {
+    const currentSession = await Database.findOne(config.collections.sessions, {hash: req.header("lovr-api-key")});
+    if(!currentSession || !currentSession._id){
+        throw new HTTP401Error("Authorization required");
+    }
+    const currentProfile = await Database.findOne(config.collections.profiles, {_id: currentSession.profile});
+    if(!currentProfile || !currentProfile._id){
+        throw new HTTP401Error("Authorization required");
+    }
+
+    return currentProfile;
+};
 const generateBodyAggregate = (profile: Profile) => {
     let filterGenre;
     if (profile.preferences.genre == Genre.BOTH) {

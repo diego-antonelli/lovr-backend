@@ -59,10 +59,16 @@ export interface Preferences{
 }
 
 export interface Device{
-    id: string;
     uuid: string;
     locale: string;
     os: string;
     version: string;
     deviceType: string;
+}
+
+export interface UpdateLocationRequest extends Device {
+    latitude?: number;
+    longitude?: number;
+    altitude?: number;
+    accuracy?: number;
 }
