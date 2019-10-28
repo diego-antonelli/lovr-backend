@@ -26,53 +26,7 @@ export const findProfiles = async (req: Request) => {
         return [];
     }
 
-    let filterGenre;
-    if(currentProfile.preferences.genre == Genre.BOTH){
-        filterGenre = {
-            $or: [
-                {
-                    "genre": Genre.MALE
-                },
-                {
-                    "genre": Genre.FEMALE
-                }
-            ]
-        }
-    }else{
-        filterGenre = {
-            "genre": currentProfile.preferences.genre
-        }
-    }
-
-    const results = await Database.findMany(config.collections.profiles, {
-        "_id": {
-            $ne: currentProfile._id
-        },
-        ...filterGenre,
-        "age": {
-            $gte: currentProfile.preferences.minimumAge,
-            $lte: currentProfile.preferences.maximumAge
-        },
-        "preferences.minimumAge": {
-            $lte: currentProfile.age
-        },
-        "preferences.maximumAge": {
-            $gte: currentProfile.age
-        },
-        $or: [
-            {"preferences.genre": Genre.BOTH},
-            {"preferences.genre": currentProfile.genre}
-        ],
-        "location": {
-            $near: {
-                $geometry: {
-                    type: "Point",
-                    coordinates: currentProfile.location.coordinates
-                },
-                $maxDistance: currentProfile.preferences.distance * METERS_PER_KM
-            }
-        }
-    });
+    const results = await Database.findAggregate(config.collections.profiles, generateBodyAggregate(currentProfile));
 
     if(results.length === 0) return [];
 
@@ -84,4 +38,55 @@ export const findProfiles = async (req: Request) => {
         const {_id, location, preferences, ...otherProps} = profile;
         return otherProps;
     });
+};
+
+const generateBodyAggregate = (profile: Profile) => {
+    let filterGenre;
+    if (profile.preferences.genre == Genre.BOTH) {
+        filterGenre = {
+            $or: [
+                {
+                    "genre": Genre.MALE
+                },
+                {
+                    "genre": Genre.FEMALE
+                }
+            ]
+        }
+    } else {
+        filterGenre = {
+            "genre": profile.preferences.genre
+        }
+    }
+    return {
+        $geoNear: {
+            near: {
+                type: "Point",
+                coordinates: profile.location!.coordinates
+            },
+            distanceField: "distance",
+            maxDistance: profile.preferences.distance * METERS_PER_KM,
+            key: "location",
+            query: {
+                "_id": {
+                    $ne: profile._id
+                },
+                ...filterGenre,
+                "age": {
+                    $gte: profile.preferences.minimumAge,
+                    $lte: profile.preferences.maximumAge
+                },
+                "preferences.minimumAge": {
+                    $lte: profile.age
+                },
+                "preferences.maximumAge": {
+                    $gte: profile.age
+                },
+                $or: [
+                    {"preferences.genre": Genre.BOTH},
+                    {"preferences.genre": profile.genre}
+                ]
+            }
+        }
+    }
 };

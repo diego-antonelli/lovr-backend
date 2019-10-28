@@ -57,6 +57,11 @@ export class Database {
         return await Database.db.collection(collection).find(filter).toArray();
     };
 
+    public static findAggregate = async (collection: string, filter: any) => {
+        if (!Database.client.isConnected()) throw new MongoError("Mongo is disconnected");
+        return await Database.db.collection(collection).aggregate([filter]).toArray();
+    };
+
     public static disconnect = async () => {
         return await Database.client.close();
     }
