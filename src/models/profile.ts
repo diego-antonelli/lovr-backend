@@ -31,7 +31,6 @@ export interface Location {
 }
 
 export interface SocialNetwork{
-    id: string;
     type: SocialNetworkType;
     user: string;
 }

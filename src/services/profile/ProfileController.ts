@@ -125,6 +125,7 @@ const generateBodyAggregate = (profile: Profile) => {
             distanceField: "distance",
             maxDistance: profile.preferences.distance * METERS_PER_KM,
             key: "location",
+            spherical: true,
             query: {
                 "_id": {
                     $ne: profile._id
