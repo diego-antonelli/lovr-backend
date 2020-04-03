@@ -8,16 +8,22 @@
   "schemes": ["http"],
   "produces": ["application/json"],
   "paths": {
-    "/search": {
-      "get": {
-        "tags": ["Search Text"],
-        "summary": "Search by places using opencagedata service",
+    "/login": {
+      "post": {
+        "tags": ["Login"],
+        "summary": "Login using email and password",
         "responses": {
           "200": {
             "description": "OK"
           },
-          "400": {
-            "description": "Bad request"
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Database error"
           }
         },
         "content": {
@@ -25,11 +31,169 @@
         },
         "parameters": [
           {
-            "name": "q",
-            "in": "query",
-            "description": "Specifies the query string",
+            "name": "loginRequest",
+            "in": "body",
+            "description": "Specifies the login request",
             "required": true,
-            "type": "string"
+            "schema": {
+              "description": "Login Request",
+              "example": {
+                "email": "diego@lovr.site",
+                "password": "123456"
+              },
+              "items": {
+                "email": "string",
+                "password": "string"
+              },
+              "maxItems": 1,
+              "minItems": 1
+            }
+          }
+        ]
+      }
+    },
+    "/profile/all": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Obtain all the profiles around according to a specific profile and preferences",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "lovr-api-key",
+            "in": "header",
+            "description": "Lovr API Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/profile/update-location": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Update the location of the current user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "No profiles changed"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "lovr-api-key",
+            "in": "header",
+            "description": "Lovr API Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Specifies the update location body",
+            "required": true,
+            "schema": {
+              "description": "Update Location Request",
+              "example": {
+                "latitude": 1.2345,
+                "longitude": 1.2345,
+                "uuid": "123456789",
+                "locale": "en_US",
+                "os": "iOS",
+                "version": "13.0",
+                "deviceType": "iPhone"
+              },
+              "items": {
+                "latitude": "number",
+                "longitude": "number",
+                "uuid": "string",
+                "locale": "string",
+                "os": "string",
+                "version": "string",
+                "deviceType": "string",
+                "altitude": "number",
+                "accuracy": "number"
+              },
+              "maxItems": 1,
+              "minItems": 1
+            }
+          }
+        ]
+      }
+    },
+    "/profile/update-preferences": {
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Update the preferences of the current user",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "No profiles changed"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        },
+        "content": {
+          "application/json": {}
+        },
+        "parameters": [
+          {
+            "name": "lovr-api-key",
+            "in": "header",
+            "description": "Lovr API Key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Specifies the update preferences body",
+            "required": true,
+            "schema": {
+              "description": "Update Preferences Request. M: Make, F: Female, B: Both",
+              "example": {
+                "genre": "B",
+                "minimumAge": 18,
+                "maximumAge": 60,
+                "distance": 50,
+                "showRealLocation": false
+              },
+              "items": {
+                "genre": "string",
+                "minimumAge": "number",
+                "maximumAge": "number",
+                "distance": "number",
+                "showRealLocation": "boolean"
+              },
+              "maxItems": 1,
+              "minItems": 1
+            }
           }
         ]
       }
