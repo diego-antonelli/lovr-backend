@@ -14,3 +14,17 @@ patch:
         patched: '2020-05-01T04:07:08.621Z'
     - pm2 > lodash:
         patched: '2020-05-01T04:07:08.621Z'
+    - request-promise > request-promise-core > lodash:
+        patched: '2020-05-20T18:05:29.493Z'
+    - pm2 > @pm2/agent > async > lodash:
+        patched: '2020-05-20T18:05:29.493Z'
+    - pm2 > @pm2/io > async > lodash:
+        patched: '2020-05-20T18:05:29.493Z'
+    - pm2 > @pm2/js-api > async > lodash:
+        patched: '2020-05-20T18:05:29.493Z'
+    - pm2 > pm2-deploy > async > lodash:
+        patched: '2020-05-20T18:05:29.493Z'
+    - pm2 > vizion > async > lodash:
+        patched: '2020-05-20T18:05:29.493Z'
+    - pm2 > lodash:
+        patched: '2020-05-20T18:05:29.493Z'

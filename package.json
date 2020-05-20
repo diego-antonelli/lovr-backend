@@ -28,7 +28,7 @@
     "dotenv": "^8.2.0",
     "express": "^5.0.0-alpha.7",
     "mongodb": "^3.3.3",
-    "pm2": "^4.1.2",
+    "pm2": "^4.3.0",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "sha256": "^0.2.0",
@@ -37,7 +37,7 @@
     "tsc-watch": "^4.2.3",
     "typescript": "^3.6.4",
     "uuid": "^3.3.3",
-    "snyk": "^1.316.1"
+    "snyk": "^1.323.1"
   },
   "jest": {
     "verbose": true,
