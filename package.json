@@ -36,7 +36,7 @@
     "swagger-ui-express": "^4.1.4",
     "tsc-watch": "^4.2.3",
     "typescript": "^3.6.4",
-    "uuid": "^3.3.3",
+    "uuid": "^3.4.0",
     "snyk": "^1.323.1"
   },
   "jest": {
