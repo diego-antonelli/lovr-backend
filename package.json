@@ -30,7 +30,7 @@
     "mongodb": "^3.5.7",
     "pm2": "^4.3.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4",
+    "request-promise": "^4.2.5",
     "sha256": "^0.2.0",
     "supertest": "^4.0.2",
     "swagger-ui-express": "^4.1.4",
