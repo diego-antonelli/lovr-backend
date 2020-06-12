@@ -37,7 +37,7 @@
     "tsc-watch": "^4.2.5",
     "typescript": "^3.6.4",
     "uuid": "^3.4.0",
-    "snyk": "^1.323.1"
+    "snyk": "^1.323.2"
   },
   "jest": {
     "verbose": true,
